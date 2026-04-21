@@ -40,8 +40,25 @@ export function useGeolocation() {
       return;
     }
 
+    // Wall-clock cap: some browsers / OS-level permission states cause
+    // getCurrentPosition to never invoke either callback (the built-in
+    // `timeout` option only covers the post-permission acquisition phase).
+    // Without this, `loading` would stay true forever and the UI would
+    // show skeleton loaders indefinitely.
+    const geoTimeout = setTimeout(() => {
+      setState((s) =>
+        s.loading
+          ? { ...s, loading: false, error: "Location timed out. Search for a city instead." }
+          : s
+      );
+    }, 15000);
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        // Coordinates received — cancel the wall-clock timeout so it doesn't
+        // fire while we're still waiting on the reverse-geocode network call.
+        clearTimeout(geoTimeout);
+
         const { latitude: lat, longitude: lng } = position.coords;
 
         setState((s) => ({ ...s, lat, lng }));
@@ -78,7 +95,8 @@ export function useGeolocation() {
               error: `${result.cityName} is not yet available. Try searching for a city.`,
             }));
           }
-        } catch {
+        } catch (err) {
+          console.error("[useGeolocation] reverse-geocode failed:", err);
           setState((s) => ({
             ...s,
             loading: false,
@@ -105,6 +123,8 @@ export function useGeolocation() {
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
     );
+
+    return () => clearTimeout(geoTimeout);
   }, []);
 
   return state;

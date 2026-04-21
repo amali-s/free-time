@@ -1,7 +1,6 @@
 /**
- * Reverse geocode lat/lng to a city name using the Nominatim API (OpenStreetMap).
- * Free, no API key required. Rate limit: 1 request/second.
- * https://nominatim.org/release-docs/develop/api/Reverse/
+ * Reverse geocode lat/lng to a city name via the /api/geocode proxy,
+ * which calls Nominatim server-side with a proper User-Agent header.
  */
 
 interface NominatimAddress {
@@ -23,13 +22,20 @@ export async function reverseGeocode(
   lat: number,
   lng: number
 ): Promise<ReverseGeocodeResult | null> {
-  const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1&zoom=10`;
-
-  const res = await fetch(url);
+  let res: Response;
+  try {
+    res = await fetch(`/api/geocode?lat=${lat}&lng=${lng}`, {
+      signal: AbortSignal.timeout(6000),
+    });
+  } catch {
+    return null;
+  }
 
   if (!res.ok) return null;
 
   const data = await res.json();
+  if (!data) return null;
+
   const address: NominatimAddress | undefined = data.address;
   if (!address) return null;
 
@@ -46,9 +52,7 @@ export async function reverseGeocode(
 
 /**
  * Convert a reverse-geocoded city name + region into a slug.
- * Example: ("Denver", "Colorado", "US") → "denver-co"
- *
- * Uses the US state abbreviation when possible, otherwise the full region name.
+ * Example: ("Denver", "Colorado") → "denver-co"
  */
 export function toCitySlug(cityName: string, region: string): string {
   const city = cityName.toLowerCase().replace(/\s+/g, "-");

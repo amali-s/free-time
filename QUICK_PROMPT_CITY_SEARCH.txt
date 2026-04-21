@@ -1,0 +1,103 @@
+PRIORITY #3: Fix City Search on Mobile (45 min)
+
+PROBLEM:
+- User types city name ("Boulder") on mobile
+- Dropdown appears with results
+- User taps a city (or presses Enter)
+- NOTHING HAPPENS - city doesn't change, no feedback
+
+EXPECTED FLOW:
+1. User types city name
+2. Dropdown shows matching cities
+3. User taps/clicks city OR presses Enter
+4. City is selected
+5. Page updates with spaces for that city
+
+ACTUAL FLOW:
+1. User types city name
+2. Dropdown may appear
+3. Tapping/pressing Enter does NOTHING
+4. City stays the same
+5. No feedback or error
+
+ROOT CAUSE:
+Component uses onMouseDown and onMouseEnter - these DON'T WORK on mobile touch devices!
+Need to add onTouchStart handler for mobile support.
+
+---
+
+YOUR TASK:
+
+1. **Verify API endpoint works**
+   - Does /api/cities?q=boulder endpoint exist?
+   - Open browser console: fetch('/api/cities?q=boulder').then(r => r.json()).then(console.log)
+   - Should return: { "cities": [ { "name": "Boulder", "region": "CO", ... } ] }
+   - If fails, need to create/debug API
+
+2. **Add touch event handling**
+   - File: src/components/search/CitySearch.tsx
+   - Line 223: onMouseDown handler works for desktop
+   - Add: onTouchStart handler for mobile
+   - Both should call handleSelect(city)
+
+3. **Fix dropdown positioning on mobile**
+   - Dropdown might be too tall (maxHeight: 280 at line 212)
+   - On 375px screen with keyboard, dropdown goes off-screen
+   - Make height responsive for mobile
+
+4. **Debug Enter key selection**
+   - Line 89: Enter handler checks activeIndex >= 0
+   - Does activeIndex get set when dropdown opens?
+   - Add console.log to debug
+
+5. **Test end-to-end**
+   - npm run dev
+   - Test on mobile (DevTools Ctrl+Shift+M)
+   - Type city name
+   - Tap dropdown option - should select
+   - Press Enter key - should select
+   - City should change
+   - Spaces should update for new city
+
+---
+
+KEY CODE AREAS:
+
+CitySearch.tsx line 223-226 (current - BROKEN on mobile):
+```
+onMouseDown={(e) => {
+  e.preventDefault();
+  handleSelect(city);
+}}
+```
+
+FIX (add touch support):
+```
+onMouseDown={(e) => {
+  e.preventDefault();
+  handleSelect(city);
+}}
+onTouchStart={(e) => {
+  e.preventDefault();
+  handleSelect(city);
+}}
+```
+
+---
+
+FILES TO CHECK:
+1. src/components/search/CitySearch.tsx (main component)
+2. src/app/api/cities/route.ts (API endpoint - may not exist?)
+3. src/lib/store.ts (setActiveCity function)
+
+---
+
+SUCCESS WHEN:
+- Type "Boulder" on mobile → dropdown appears
+- Tap city in dropdown → city gets selected
+- Press Enter key → city gets selected
+- City changes and spaces update
+- No console errors
+- Works on both mobile & desktop
+
+This is blocking city selection on mobile. Critical fix.

@@ -1,0 +1,74 @@
+DEBUG & FIX: Data Loading Bug - Spaces Never Load
+
+PROBLEM:
+- App shows skeleton loading cards forever
+- Real space data never appears
+- Only happens on page load - data not fetching from API
+
+EXPECTED FLOW:
+1. App loads → shows skeletons
+2. Fetches /api/spaces?city=denver-co
+3. Skeleton disappears after 1-2 seconds
+4. Real space cards appear with data
+
+ACTUAL FLOW:
+1. App loads → shows skeletons
+2. (Unknown - data fetch fails?)
+3. Skeletons NEVER disappear
+4. Real data NEVER appears
+
+---
+
+YOUR TASK:
+
+1. **Debug the data loading in src/app/page.tsx**
+   - Lines 93-111: Check if geolocation/activeCity is being set
+   - Lines 121-141: Check if fetchSpaces function is being called
+   - Look for any errors being silently caught
+   - Add console.log statements to trace execution
+
+2. **Check the API endpoint**
+   - Does /api/spaces endpoint exist in src/app/api/spaces/route.ts?
+   - If it exists, does it return data in correct format?
+   - Expected response: { "spaces": [...], "total": 142 }
+
+3. **Test the fetch manually**
+   - Run: npm run dev
+   - Open browser console (F12)
+   - Paste: fetch('/api/spaces?city=denver-co').then(r => r.json()).then(console.log)
+   - What comes back? Success or error?
+
+4. **Fix the issue**
+   - If API endpoint missing: Create it
+   - If API returns wrong format: Fix response format
+   - If fetch is failing: Add error handling & logging
+   - If activeCity isn't set: Debug geolocation
+
+5. **Verify the fix**
+   - Run npm run dev
+   - Load page
+   - Check: Do skeletons disappear? Do real cards appear?
+   - Check Network tab: Does /api/spaces return 200?
+   - Check console: Any errors?
+
+---
+
+FILES TO CHECK:
+- src/app/page.tsx (main page, fetchSpaces logic)
+- src/lib/store.ts (state management)
+- src/components/list/SpaceList.tsx (skeleton vs real rendering)
+- src/app/api/spaces/route.ts (API endpoint - may not exist)
+
+KEY VARIABLES TO TRACK:
+- activeCity: Is it being set from geolocation?
+- spacesLoading: Does it change from true to false?
+- spaces: Does it get populated with data?
+
+SUCCESS WHEN:
+- Skeletons disappear after 1-2 seconds
+- Real space cards appear
+- No console errors
+- /api/spaces returns 200 with data
+- Works on both desktop & mobile
+
+This is BLOCKING the entire app. Fix this first before moving to other bugs.

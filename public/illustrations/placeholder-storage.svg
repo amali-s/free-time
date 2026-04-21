@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" fill="none">
+  <!-- Background wash — warm parchment -->
+  <rect width="400" height="280" rx="8" fill="#EDE6DE"/>
+
+  <!-- Subtle floor plane -->
+  <ellipse cx="200" cy="230" rx="160" ry="18" fill="#E8DDA2" opacity="0.4"/>
+
+  <!-- Wall suggestion — soft watercolor edge -->
+  <path d="M60 60 L60 210 Q60 220 70 220 L330 220 Q340 220 340 210 L340 60"
+        stroke="#ADABA5" stroke-width="1" opacity="0.3" fill="none"/>
+
+  <!-- Locker unit — left -->
+  <rect x="90" y="90" width="70" height="120" rx="4" fill="#FFFDFB"
+        stroke="#595640" stroke-width="1.5" opacity="0.9"/>
+  <!-- Locker doors -->
+  <line x1="125" y1="90" x2="125" y2="210" stroke="#595640" stroke-width="1" opacity="0.5"/>
+  <line x1="90" y1="150" x2="160" y2="150" stroke="#595640" stroke-width="1" opacity="0.5"/>
+  <!-- Locker handles -->
+  <circle cx="120" cy="120" r="2.5" fill="#BF9A49"/>
+  <circle cx="140" cy="120" r="2.5" fill="#BF9A49"/>
+  <circle cx="120" cy="180" r="2.5" fill="#BF9A49"/>
+  <circle cx="140" cy="180" r="2.5" fill="#BF9A49"/>
+
+  <!-- Suitcase — center, slightly tilted -->
+  <g transform="translate(185, 130) rotate(-5)">
+    <!-- Body -->
+    <rect x="0" y="0" width="55" height="75" rx="6" fill="#1E526F" opacity="0.85"
+          stroke="#595640" stroke-width="1.5"/>
+    <!-- Handle -->
+    <rect x="18" y="-12" width="18" height="14" rx="3" fill="none"
+          stroke="#595640" stroke-width="1.5"/>
+    <!-- Strap -->
+    <line x1="10" y1="30" x2="44" y2="30" stroke="#E8DDA2" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="10" y1="50" x2="44" y2="50" stroke="#E8DDA2" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Wheels -->
+    <circle cx="12" cy="78" r="4" fill="#595640" opacity="0.6"/>
+    <circle cx="42" cy="78" r="4" fill="#595640" opacity="0.6"/>
+  </g>
+
+  <!-- Backpack — right side, leaning against wall -->
+  <g transform="translate(275, 135)">
+    <!-- Body -->
+    <path d="M0 20 Q0 0 20 0 L35 0 Q55 0 55 20 L55 70 Q55 80 45 80 L10 80 Q0 80 0 70 Z"
+          fill="#BF9A49" opacity="0.8" stroke="#595640" stroke-width="1.5"/>
+    <!-- Top flap -->
+    <path d="M5 20 Q5 10 15 8 L40 8 Q50 10 50 20" fill="#875C00" opacity="0.5"
+          stroke="#595640" stroke-width="1"/>
+    <!-- Pocket -->
+    <rect x="12" y="40" width="30" height="20" rx="3" fill="none"
+          stroke="#595640" stroke-width="1" opacity="0.6"/>
+    <!-- Buckle -->
+    <rect x="23" y="28" width="8" height="6" rx="1.5" fill="#E8DDA2"
+          stroke="#595640" stroke-width="0.8"/>
+    <!-- Straps hanging -->
+    <path d="M10 80 L8 95" stroke="#595640" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+    <path d="M45 80 L47 95" stroke="#595640" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  </g>
+
+  <!-- Small potted plant on top of lockers — lived-in detail -->
+  <g transform="translate(105, 70)">
+    <rect x="0" y="8" width="14" height="12" rx="2" fill="#875C00" opacity="0.5"/>
+    <path d="M7 8 Q3 -2 7 -5 Q11 -2 7 8" fill="#00803F" opacity="0.5"/>
+    <path d="M7 6 Q0 -4 4 -8" stroke="#00803F" stroke-width="1" fill="none" opacity="0.4"/>
+    <path d="M7 6 Q14 -4 10 -8" stroke="#00803F" stroke-width="1" fill="none" opacity="0.4"/>
+  </g>
+
+  <!-- Warm light wash — late afternoon glow -->
+  <rect x="0" y="0" width="400" height="280" rx="8" fill="#E8DDA2" opacity="0.06"/>
+</svg>

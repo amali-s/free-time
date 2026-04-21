@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" fill="none">
+  <!-- Background wash — warm parchment -->
+  <rect width="400" height="280" rx="8" fill="#EDE6DE"/>
+
+  <!-- Sky suggestion at top -->
+  <rect x="0" y="0" width="400" height="120" rx="8" fill="#85CEDE" opacity="0.08"/>
+
+  <!-- Distant hills -->
+  <path d="M0 100 Q80 60 160 90 Q240 70 320 85 Q380 75 400 95 L400 130 L0 130 Z"
+        fill="#00803F" opacity="0.08"/>
+
+  <!-- Tree — left side -->
+  <g transform="translate(50, 50)">
+    <!-- Trunk -->
+    <rect x="22" y="80" width="12" height="50" rx="3" fill="#875C00" opacity="0.35"
+          stroke="#595640" stroke-width="1"/>
+    <!-- Canopy — layered organic shapes -->
+    <ellipse cx="28" cy="55" rx="35" ry="30" fill="#00803F" opacity="0.18"/>
+    <ellipse cx="20" cy="50" rx="25" ry="25" fill="#00803F" opacity="0.15"/>
+    <ellipse cx="38" cy="48" rx="22" ry="22" fill="#00803F" opacity="0.12"/>
+    <!-- Leaf texture hints -->
+    <circle cx="15" cy="42" r="3" fill="#00803F" opacity="0.1"/>
+    <circle cx="40" cy="38" r="4" fill="#00803F" opacity="0.08"/>
+    <circle cx="28" cy="35" r="3.5" fill="#00803F" opacity="0.1"/>
+  </g>
+
+  <!-- Tree — right side, smaller -->
+  <g transform="translate(310, 65)">
+    <rect x="15" y="60" width="10" height="40" rx="2" fill="#875C00" opacity="0.3"
+          stroke="#595640" stroke-width="0.8"/>
+    <ellipse cx="20" cy="42" rx="28" ry="24" fill="#00803F" opacity="0.15"/>
+    <ellipse cx="14" cy="38" rx="20" ry="20" fill="#00803F" opacity="0.12"/>
+  </g>
+
+  <!-- Ground plane / path -->
+  <path d="M0 200 Q100 190 200 195 Q300 200 400 192 L400 280 L0 280 Z"
+        fill="#00803F" opacity="0.06"/>
+  <!-- Stone path -->
+  <path d="M160 220 Q180 210 200 215 Q220 210 240 220 Q260 225 280 218"
+        stroke="#ADABA5" stroke-width="1.5" fill="none" opacity="0.3" stroke-linecap="round"/>
+
+  <!-- Park bench — center -->
+  <g transform="translate(140, 170)">
+    <!-- Seat -->
+    <rect x="0" y="15" width="100" height="8" rx="2" fill="#875C00" opacity="0.4"
+          stroke="#595640" stroke-width="1.5"/>
+    <!-- Back rest -->
+    <rect x="5" y="0" width="90" height="6" rx="2" fill="#875C00" opacity="0.35"
+          stroke="#595640" stroke-width="1"/>
+    <rect x="5" y="8" width="90" height="6" rx="2" fill="#875C00" opacity="0.3"
+          stroke="#595640" stroke-width="1"/>
+    <!-- Back supports -->
+    <line x1="10" y1="0" x2="10" y2="23" stroke="#595640" stroke-width="1.5" opacity="0.4"/>
+    <line x1="90" y1="0" x2="90" y2="23" stroke="#595640" stroke-width="1.5" opacity="0.4"/>
+    <!-- Legs -->
+    <line x1="10" y1="23" x2="8" y2="45" stroke="#595640" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
+    <line x1="90" y1="23" x2="92" y2="45" stroke="#595640" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
+    <!-- Armrests -->
+    <path d="M0 12 Q-5 10 -3 15 Q0 18 0 15" fill="#595640" opacity="0.3"/>
+    <path d="M100 12 Q105 10 103 15 Q100 18 100 15" fill="#595640" opacity="0.3"/>
+  </g>
+
+  <!-- Bench shadow -->
+  <ellipse cx="190" cy="218" rx="55" ry="6" fill="#595640" opacity="0.05"/>
+
+  <!-- Small bird on path — lived-in detail -->
+  <g transform="translate(270, 200)">
+    <ellipse cx="5" cy="3" rx="5" ry="3.5" fill="#595640" opacity="0.3"/>
+    <circle cx="9" cy="1" r="2.5" fill="#595640" opacity="0.3"/>
+    <!-- Beak -->
+    <path d="M11 1 L14 1.5 L11 2.5" fill="#D98900" opacity="0.5"/>
+    <!-- Legs -->
+    <line x1="3" y1="6" x2="2" y2="10" stroke="#595640" stroke-width="0.8" opacity="0.3"/>
+    <line x1="6" y1="6" x2="7" y2="10" stroke="#595640" stroke-width="0.8" opacity="0.3"/>
+  </g>
+
+  <!-- Lamp post — left of bench -->
+  <g transform="translate(115, 80)">
+    <line x1="8" y1="30" x2="8" y2="135" stroke="#595640" stroke-width="2" opacity="0.3" stroke-linecap="round"/>
+    <!-- Lamp head -->
+    <path d="M0 25 Q0 18 8 15 Q16 18 16 25" fill="#E8DDA2" opacity="0.4" stroke="#595640" stroke-width="1"/>
+    <!-- Light glow -->
+    <circle cx="8" cy="22" r="12" fill="#E8DDA2" opacity="0.08"/>
+  </g>
+
+  <!-- Soft cloud shapes -->
+  <ellipse cx="250" cy="35" rx="40" ry="12" fill="#FFFDFB" opacity="0.3"/>
+  <ellipse cx="235" cy="32" rx="25" ry="10" fill="#FFFDFB" opacity="0.25"/>
+  <ellipse cx="130" cy="25" rx="30" ry="8" fill="#FFFDFB" opacity="0.2"/>
+
+  <!-- Warm afternoon light overlay -->
+  <rect x="0" y="0" width="400" height="280" rx="8" fill="#E8DDA2" opacity="0.06"/>
+</svg>

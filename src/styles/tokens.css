@@ -1,0 +1,113 @@
+/* ============================================
+   Sage Component Kit — Design Tokens
+   Source: design.md / Figma Sage Component Kit
+   ============================================ */
+
+:root {
+  /* ---- Brand ---- */
+  --color-brand-blue: #1E526F;
+  --color-brand-red: #7D0A16;
+
+  /* ---- Actions ---- */
+  --color-primary-action: #30B6E7;
+  --color-secondary-action: #575040;
+  --color-active-state: #85CEDE;
+  --color-active-state-secondary: #BF9A49;
+
+  /* ---- Surfaces ---- */
+  --color-background: #EDE6DE;
+  --color-foreground: #FFFDFB;
+  --color-accent: #E8DDA2;
+
+  /* ---- Text ---- */
+  --color-text-primary: #1B2323;
+  --color-text-secondary: #595640;
+  --color-text-tertiary: #827A64;  /* Sage Kit — muted label text (tag labels, metadata) */
+  --color-text-disabled: #ADABA5;
+  --color-neutral-text: #6C7276;
+
+  /* ---- Semantic ---- */
+  --color-error: #CC3926;
+  --color-warning: #D98900;
+  --color-warning-yellow: #FFB80F;
+  --color-success: #00803F;
+  --color-disabled: #A5B1B8;
+
+  /* ---- Extended Palette ---- */
+  --color-light-blue: #60E1F0;
+  --color-dark-blue: #096694;
+  --color-dark-orange: #875C00;
+  --color-bright-magenta: #FF4978;
+  --color-pale-mustard: #D9D059;
+  --color-lime-green: #16D113;
+  --color-dark-magenta: #902944;
+
+  /* ---- Tag Colors (background tints) ---- */
+  --tag-free-bg: color-mix(in srgb, #00803F 12%, var(--color-foreground));
+  --tag-free-text: #00803F;
+  --tag-paid-bg: color-mix(in srgb, #D98900 12%, var(--color-foreground));
+  --tag-paid-text: #D98900;
+  --tag-cafe-bg: color-mix(in srgb, #875C00 12%, var(--color-foreground));
+  --tag-cafe-text: #875C00;
+  --tag-wifi-bg: color-mix(in srgb, #30B6E7 12%, var(--color-foreground));
+  --tag-wifi-text: #30B6E7;
+  --tag-bathroom-bg: color-mix(in srgb, #1E526F 12%, var(--color-foreground));
+  --tag-bathroom-text: #1E526F;
+  --tag-storage-bg: color-mix(in srgb, #096694 12%, var(--color-foreground));
+  --tag-storage-text: #096694;
+  --tag-coworking-bg: color-mix(in srgb, #575040 12%, var(--color-foreground));
+  --tag-coworking-text: #575040;
+  --tag-outdoor-bg: color-mix(in srgb, #16D113 12%, var(--color-foreground));
+  --tag-outdoor-text: #16D113;
+
+  /* ---- Typography ---- */
+  --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic Pro", "Noto Sans",
+    system-ui, sans-serif;
+
+  /* ---- Spacing (base: 16px) ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ---- Border Radius ---- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 50%;
+
+  /* ---- Shadows (warm, Text Secondary RGB, never pure black) ---- */
+  --shadow-sm: 0 2px 8px rgba(89, 86, 64, 0.08);
+  --shadow-md: 0 4px 16px rgba(89, 86, 64, 0.12);
+
+  /* ---- Animation Easing ---- */
+  --ease-enter: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-exit: cubic-bezier(0.0, 0.0, 0.58, 1.0);
+
+  /* ---- Texture ---- */
+  --texture-grain-opacity: 0.03;
+}
+
+/* ---- Dark Mode Overrides ---- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary-action: #1F83BD;
+    --color-neutral-text: #969EA3;
+  }
+}
+
+/* ---- Reduced Motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,45 @@
+TASK: Fix Geolocation Detection (Bug #1 — Priority #1)
+
+PROBLEM:
+App requests geolocation permission but doesn't detect user's city. Users see "Search for a city above" even after granting permission. This blocks the entire app on first visit.
+
+CURRENT: User grants permission → nothing happens → stuck on empty state
+EXPECTED: User grants permission → detects coordinates → reverse geocodes to city → loads spaces
+
+FILES TO FIX:
+1. src/lib/geo/use-geolocation.ts — Geolocation hook
+2. src/lib/geo/reverse-geocode.ts — Converts coordinates to city name
+3. src/app/page.tsx (lines 93-111) — Orchestration and useEffect
+4. src/lib/store.ts — Zustand store (check setCity action)
+
+DEBUGGING CHECKLIST:
+[ ] Test if browser geolocation works: navigator.geolocation.getCurrentPosition(...)
+[ ] Check if use-geolocation.ts hook returns coordinates
+[ ] Check if reverse-geocode.ts is being called
+[ ] Verify city slug format (should be "denver-co", not "Denver, CO")
+[ ] Check if Zustand store is being updated with the city
+[ ] Check if /api/spaces API call is being made after city is set
+[ ] Look for errors in browser console (F12)
+[ ] Check Network tab to see if geolocation/reverse-geocode calls succeed
+
+COMMON ISSUES:
+- Geolocation hook not calling navigator.geolocation API
+- Reverse geocoding not being triggered after coordinates arrive
+- City slug format wrong (needs lowercase, hyphenated)
+- Missing error handling for permission denied
+- useEffect dependencies wrong in page.tsx
+
+SUCCESS CRITERIA:
+- App requests location permission on load
+- After allowing: coordinates detected in console
+- Reverse geocoding returns city name
+- City stored in Zustand store
+- API call to /api/spaces?city=denver-co made
+- Real space data loads (skeletons replaced)
+- No console errors
+
+ESTIMATE: 30 min to fix + 15 min to test = 45 min total
+
+NEXT AFTER THIS:
+Priority #2: Fix Data Loading (skeleton cards issue)
+Priority #3: Fix City Search on mobile
