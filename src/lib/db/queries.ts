@@ -1,4 +1,4 @@
-import { sql, eq, ilike, and, arrayContains } from "drizzle-orm";
+import { sql, eq, ilike, and, arrayContains, isNull } from "drizzle-orm";
 import { db } from "./client";
 import { spaces, cities } from "./schema";
 import type { Amenity } from "../types/space";
@@ -83,4 +83,36 @@ export async function getCities(query?: string) {
   }
 
   return db.select().from(cities).orderBy(cities.name);
+}
+
+/**
+ * Returns spaces that have not yet been through the image enrichment script.
+ * Keyed on imageEnrichedAt IS NULL, not imageUrl IS NULL, so spaces with no
+ * photo match are not re-processed on subsequent runs.
+ */
+export async function getSpacesWithoutImages(
+  limit: number,
+  offset: number
+): Promise<(typeof spaces.$inferSelect)[]> {
+  return db
+    .select()
+    .from(spaces)
+    .where(isNull(spaces.imageEnrichedAt))
+    .orderBy(spaces.id)
+    .limit(limit)
+    .offset(offset);
+}
+
+/**
+ * Marks a space as enriched. Pass imageUrl = null when no photo was found.
+ * Always sets imageEnrichedAt to the current timestamp.
+ */
+export async function updateSpaceImage(
+  id: string,
+  imageUrl: string | null
+): Promise<void> {
+  await db
+    .update(spaces)
+    .set({ imageUrl, imageEnrichedAt: new Date() })
+    .where(eq(spaces.id, id));
 }

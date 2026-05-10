@@ -5,6 +5,7 @@ import {
   real,
   varchar,
   jsonb,
+  timestamp,
 } from "drizzle-orm/pg-core";
 
 /* ---- Enums ---- */
@@ -49,6 +50,7 @@ export const spaces = pgTable("spaces", {
   hours: jsonb("hours"),
   description: text("description"),
   imageUrl: text("image_url"),
+  imageEnrichedAt: timestamp("image_enriched_at"),
   websiteUrl: text("website_url"),
 });
 

@@ -1,0 +1,22 @@
+feat: app snapshot + Vercel deploy prep
+
+App code:
+- Swipe deck (canvas/SwipeDeck.tsx, SpaceProfileCard) with framer-motion
+  drag/spring physics; honors prefers-reduced-motion.
+- Geolocation hook with reverse-geocode via /api/geocode + city matching.
+- Storage helper for Google Places photo enrichment.
+- Drizzle migration 0001_lying_captain_universe.sql.
+- Misc UI polish across CitySearch, FilterBar, SpaceCard, tokens.
+
+Vercel deploy prep:
+- DEPLOY.md walkthrough.
+- Lazy DATABASE_URL init in src/lib/db/client.ts so build phase doesn't
+  crash if env is briefly unbound.
+- Mark API routes as 'force-dynamic' + 'nodejs' runtime (defensive).
+- package.json: pin engines.node >= 20.
+- .gitignore: stop ignoring .env.example so contributors can see required
+  vars; ignore .claude/settings.local.json.
+- Fix React 19 react-hooks/refs lint errors in SwipeDeck (refs read during
+  render -> useState).
+
+See DEPLOY.md for the import-to-Vercel walkthrough.

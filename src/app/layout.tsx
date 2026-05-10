@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Noto_Sans, Rasa } from "next/font/google";
 import "./globals.css";
 
@@ -29,6 +29,18 @@ export const metadata: Metadata = {
   title: "FreeTime — Find spaces to work and wait",
   description:
     "Find public and work-friendly spaces near you. Cafes, libraries, coworking day passes, parks, and more — filtered by wifi, outlets, seating, and other amenities.",
+};
+
+/**
+ * Mobile is the primary viewport for FreeTime — iOS Safari and Android Chrome
+ * both need an explicit viewport meta to render at device width instead of
+ * defaulting to a 980px desktop layout. We allow zoom (no maximumScale=1) so
+ * we don't break pinch-zoom for accessibility.
+ */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

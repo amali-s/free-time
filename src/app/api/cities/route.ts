@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCities } from "@/lib/db/queries";
 import type { CitiesResponse } from "@/lib/types/space";
 
+// Reads request URL params + hits Postgres — never cache or pre-render.
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const query = params.get("q") ?? undefined;

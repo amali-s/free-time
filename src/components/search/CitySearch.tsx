@@ -34,7 +34,7 @@ export function CitySearch({ onSelect, placeholder = "Search for a city…" }: C
   const [activeIndex, setActiveIndex] = useState(-1);
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const blurTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const blurTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   /* Sync display value when active city changes externally (e.g. geolocation) */
   useEffect(() => {

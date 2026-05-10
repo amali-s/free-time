@@ -296,9 +296,11 @@ const AMENITY_CONFIG: Record<
 interface AmenityTagProps {
   amenity: Amenity;
   className?: string;
+  /** Override specific style properties — useful for alternate surfaces (e.g. pale-mustard in pile view) */
+  style?: React.CSSProperties;
 }
 
-export function AmenityTag({ amenity, className }: AmenityTagProps) {
+export function AmenityTag({ amenity, className, style }: AmenityTagProps) {
   const { label, Icon } = AMENITY_CONFIG[amenity];
 
   return (
@@ -319,6 +321,7 @@ export function AmenityTag({ amenity, className }: AmenityTagProps) {
         fontFamily: "var(--font-sans)",
         whiteSpace: "nowrap",
         flexShrink: 0,
+        ...style,
       }}
     >
       <Icon />

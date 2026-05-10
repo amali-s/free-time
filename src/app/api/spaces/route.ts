@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSpacesByCity } from "@/lib/db/queries";
 import type { Amenity, Space, SpacesResponse } from "@/lib/types/space";
 
+// Reads request URL params + hits Postgres — never cache or pre-render.
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const VALID_AMENITIES = new Set<string>([
   "wifi",
   "outlets",

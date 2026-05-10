@@ -2,7 +2,7 @@
 
 ## Project Summary
 
-FreeTime is a map-based web app that helps people find public and work-friendly spaces to spend extended time in. Spaces include cafes, coworking day-passes, libraries, parks, plazas, and transit hubs. Users filter by amenities (wifi, outlets, seating, bathrooms, storage) and browse via map or list view.
+FreeTime is a mobile-first web app that helps people find public and work-friendly spaces to spend extended time in. Spaces include cafes, coworking day-passes, libraries, parks, plazas, and transit hubs. Users filter by amenities (wifi, outlets, seating, bathrooms, storage) and flip through nearby spaces in a swipe deck — swipe right to save, left to pass, tap to open the space in their default map app.
 
 ## Agent Behavior
 
@@ -23,8 +23,8 @@ FreeTime is a map-based web app that helps people find public and work-friendly 
 ### Priorities
 1. **Usability on mobile** -- Most users will be on their phone in an unfamiliar place. Mobile is the primary viewport.
 2. **Fast time-to-result** -- Minimize taps/clicks between opening the app and finding a suitable space.
-3. **Accessibility** -- WCAG 2.1 AA compliance. Touch targets >= 44px. Sufficient color contrast.
-4. **Performance** -- Lazy-load map tiles and list items. Target < 3s first contentful paint on 3G.
+3. **Accessibility** -- WCAG 2.1 AA compliance. Touch targets >= 44px. Sufficient color contrast. Honor `prefers-reduced-motion` (the swipe deck disables springs/tilt when the OS setting is on).
+4. **Performance** -- Lazy-load images and defer non-critical work. Target < 3s first contentful paint on 3G.
 
 ### What NOT to do
 - Don't add features not described in README.md without asking first.
@@ -39,15 +39,17 @@ FreeTime is a map-based web app that helps people find public and work-friendly 
 ### Tech Stack
 | Layer | Technology | Notes |
 |---|---|---|
-| Framework | Next.js (App Router) | Server components for initial load; client components for map/interactivity |
+| Framework | Next.js 16 (App Router) | Server components for initial load; client components for the swipe deck and other interactive pieces |
 | Language | TypeScript | Strict mode enabled |
-| Styling | Tailwind CSS | Configured with Sage design tokens |
-| Map | Mapbox GL JS | Interactive vector map with custom pins; fallback to Leaflet + OSM if no Mapbox token |
-| State | Zustand | Lightweight; used for filter state, selected space, view mode |
-| API | Next.js Route Handlers | `/api/spaces`, `/api/cities` |
-| Database | PostgreSQL + PostGIS | Geospatial queries for proximity sorting |
+| Styling | Tailwind CSS v4 + CSS variables | Sage design tokens defined in `src/styles/tokens.css` |
+| Swipe gestures | framer-motion | Drag/spring physics for the swipe deck; `useReducedMotion` honors OS settings |
+| State | Zustand (with `persist` middleware) | Filter state, selected space, geolocation in-memory; `savedSpaces` persisted to localStorage |
+| API | Next.js Route Handlers | `/api/spaces`, `/api/cities`, `/api/geocode` |
+| Database | Supabase Postgres + PostGIS | Geospatial queries for proximity sorting via `ST_Distance` |
 | ORM | Drizzle ORM | Type-safe, lightweight |
-| Geolocation | Browser Geolocation API | Reverse geocode to city via Mapbox or Nominatim |
+| Storage | Supabase Storage | Holds enriched space photos uploaded by `scripts/enrich-images.ts` |
+| Geolocation | Browser Geolocation API | Reverse-geocoded via `/api/geocode` (server-side Google call) |
+| Image enrichment | Google Places Photos API | Backfills `image_url` for new spaces; run via `npm run db:enrich-images` |
 
 ### API Endpoints
 
@@ -126,9 +128,21 @@ type Tag = "free" | "paid" | "cafe" | "wifi" | "bathroom" | "storage" | "coworki
 
 ### Geolocation Flow
 1. On app load, request browser geolocation permission.
-2. If granted, reverse geocode coordinates to a city name (Mapbox Geocoding API or Nominatim).
-3. Set detected city as the active city and fetch spaces.
-4. If denied or unavailable, prompt the user to search for a city manually.
+2. If granted, hit `/api/geocode` to reverse-geocode coordinates to a city slug.
+3. Set detected city as the active city and fetch spaces from `/api/spaces`.
+4. If denied or unavailable, prompt the user to search for a city manually via `CitySearch`.
+
+### Swipe Deck Interaction Model
+The primary browse view is a 3-card pile rendered by `src/components/canvas/SwipeDeck.tsx`. The interaction contract:
+
+- **Swipe right** → `useAppStore.saveSpace(id)` adds the space to `savedSpaces` (persisted to localStorage). Card flies right and the next card cycles in.
+- **Swipe left** → dismiss. Card flies left and the next card cycles in. No persistence.
+- **Tap** → opens the space in the user's native map app via `getMapsHref()` (`maps://` on iOS, `geo:` on Android, Google Maps web fallback elsewhere).
+- **Below threshold drag** → spring-back to center.
+
+Thresholds: 80px offset OR 450px/s velocity triggers a swipe. The new top card springs in from its previous middle-pile rotation; mid/back cards have deterministic ±5° rotation seeded by space id so the pile feels organic but not random per-render.
+
+When `prefers-reduced-motion: reduce` is set, the deck disables rotation, scale offsets, and spring animations — the gesture still works but resolves instantly.
 
 ### Project Structure
 ```
@@ -138,20 +152,26 @@ free-time/
       api/
         spaces/route.ts
         cities/route.ts
-      page.tsx
-      layout.tsx
+        geocode/route.ts
+      layout.tsx          # Exports viewport meta (device-width, viewportFit: cover)
+      page.tsx            # Wires geolocation → city → SwipeDeck
     components/
-      map/                # Map view, pins, popups
-      list/               # List view, list items
-      filters/            # Filter bar, filter chips
-      space-card/         # Space detail card
-      search/             # City search
-      common/             # Shared UI primitives (Button, Tag, Input)
+      canvas/             # SwipeDeck (pile + gesture engine) and SpaceProfileCard
+      list/               # SpaceList — alternate list rendering, currently unused at root
+      filters/            # FilterBar, filter chips
+      space-card/         # SpaceCard — accordion tile (used elsewhere; still includes Directions deep link)
+      search/             # CitySearch + autocomplete
+      common/             # AmenityTag, Chevron
     lib/
-      db/                 # Database client, schema, queries
-      geo/                # Geolocation utilities
-      types/              # Shared TypeScript types
-    styles/               # Global styles, Tailwind config, design tokens
-  public/                 # Static assets, icons
+      db/                 # Drizzle client, schema, queries
+      geo/                # use-geolocation hook, reverse-geocode, google-places, maps-link
+      storage/            # upload-space-photo (Supabase Storage helper)
+      types/              # Shared TypeScript types (Space, Amenity, City, …)
+      placeholder-image.ts# Maps space type → fallback illustration
+      store.ts            # Zustand store (with localStorage persist for savedSpaces)
+    styles/               # tokens.css (Sage variables), global styles, motion easings
+    utils/supabase/       # SSR-safe Supabase client/server/middleware factories
+  public/                 # Static assets, illustrations, leaf-texture
+  scripts/                # setup-db, seed, enrich-images
   drizzle/                # Migration files
 ```

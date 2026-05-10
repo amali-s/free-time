@@ -23,7 +23,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useAppStore } from "@/lib/store";
 import { useGeolocation } from "@/lib/geo/use-geolocation";
 import type { Space } from "@/lib/types/space";
-import { SpaceList } from "@/components/list/SpaceList";
+import { SwipeDeck } from "@/components/canvas/SwipeDeck";
 import { FilterBar } from "@/components/filters/FilterBar";
 import { CitySearch } from "@/components/search/CitySearch";
 
@@ -95,8 +95,6 @@ export default function Home() {
   const activeCity = useAppStore((s) => s.activeCity);
   const setActiveCity = useAppStore((s) => s.setActiveCity);
   const activeFilters = useAppStore((s) => s.activeFilters);
-  const selectedSpaceId = useAppStore((s) => s.selectedSpaceId);
-  const selectSpace = useAppStore((s) => s.selectSpace);
   const setUserLocation = useAppStore((s) => s.setUserLocation);
 
   const [spaces, setSpaces] = useState<Space[]>([]);
@@ -163,17 +161,46 @@ export default function Home() {
         display: "flex",
         flexDirection: "column",
         minHeight: "100dvh",
+        backgroundColor: "var(--color-canvas-bg)",
+        position: "relative",
       }}
     >
+      {/* ── Leaf texture layer (behind everything) ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 0,
+          backgroundImage: "url('/leaf-texture.svg')",
+          backgroundRepeat: "repeat",
+          backgroundSize: "160px 160px",
+          filter: "blur(2.5px)",
+          opacity: 0.18,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* ── Content sits above the texture ── */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100dvh",
+        }}
+      >
+
       {/* ---- Header ---- */}
       <header
         style={{
           position: "sticky",
           top: 0,
           zIndex: 10,
-          backgroundColor: "var(--color-background)",
-          borderBottom: "0.4px solid var(--color-text-disabled)",
-          boxShadow: "var(--shadow-sm)",
+          backgroundColor: "var(--color-canvas-bg)",
+          borderBottom: "0.4px solid color-mix(in srgb, var(--color-text-disabled) 60%, transparent)",
+          boxShadow: "0 2px 12px rgba(89, 86, 64, 0.08)",
         }}
       >
         {/* Wordmark row */}
@@ -247,33 +274,39 @@ export default function Home() {
         </main>
       )}
 
-      {/* ---- Main content: space list ---- */}
+      {/* ---- Main content: swipe deck ---- */}
       {(activeCity || geoLoading) && (
         <main
           style={{
             flex: 1,
-            padding: "var(--space-4)",
+            padding: "var(--space-4) var(--space-4) var(--space-8)",
             maxWidth: 600,
             width: "100%",
             marginInline: "auto",
             boxSizing: "border-box",
           }}
         >
-          {/* City heading */}
-          {activeCity && (
+          {/* City / count heading — matches Figma "12 spaces found in Austin, TX" */}
+          {activeCity && total !== null && (
             <p
               aria-live="polite"
               style={{
-                fontSize: 13,
+                fontSize: 20,
                 fontWeight: 300,
-                color: "var(--color-text-tertiary)",
-                fontFamily: "var(--font-sans)",
+                color: "var(--color-text-secondary)",
+                fontFamily: "var(--font-rasa), Georgia, serif",
+                letterSpacing: "-0.4px",
                 marginTop: 0,
-                marginBottom: "var(--space-4)",
+                marginBottom: "var(--space-6)",
               }}
             >
-              Spaces in{" "}
-              <strong style={{ color: "var(--color-text-secondary)", fontWeight: 400 }}>
+              {total} {total === 1 ? "space" : "spaces"} found in{" "}
+              <strong
+                style={{
+                  fontWeight: 600,
+                  color: "var(--color-text-secondary)",
+                }}
+              >
                 {activeCity.name}
                 {activeCity.region ? `, ${activeCity.region}` : ""}
               </strong>
@@ -297,16 +330,10 @@ export default function Home() {
             </p>
           )}
 
-          <SpaceList
-            spaces={spaces}
-            userLocation={lat !== null && lng !== null ? { lat, lng } : null}
-            selectedId={selectedSpaceId}
-            onSelect={selectSpace}
-            loading={isLoading}
-            total={total ?? undefined}
-          />
+          <SwipeDeck spaces={spaces} loading={isLoading} />
         </main>
       )}
+      </div>
     </div>
   );
 }

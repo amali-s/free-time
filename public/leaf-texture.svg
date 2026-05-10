@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <!--
+    FreeTime — botanical leaf tile
+    Designed to be repeated and blurred at ~15% opacity over #EBEDDE
+    6 leaves at varied sizes, rotations, and positions for a natural scattered feel
+  -->
+
+  <!-- Leaf 1: large, upper-left, angled left -->
+  <g transform="translate(22, 42) rotate(-28)">
+    <path d="M0 0 C -5 -10 -2 -28 8 -32 C 18 -34 22 -20 16 -8 C 10 2 2 2 0 0 Z"
+          fill="#5e7355" opacity="0.72"/>
+    <path d="M0 0 C 4 -8 10 -20 16 -28"
+          stroke="#4a5e42" stroke-width="0.7" fill="none" opacity="0.8"
+          stroke-linecap="round"/>
+    <!-- secondary vein -->
+    <path d="M8 -16 C 12 -14 14 -10 13 -7"
+          stroke="#4a5e42" stroke-width="0.4" fill="none" opacity="0.5"
+          stroke-linecap="round"/>
+  </g>
+
+  <!-- Leaf 2: medium, upper-right, angled right -->
+  <g transform="translate(118, 18) rotate(48)">
+    <path d="M0 0 C -4 -8 -1 -20 6 -23 C 13 -25 16 -14 12 -5 C 8 2 2 1 0 0 Z"
+          fill="#6b8060" opacity="0.60"/>
+    <path d="M0 0 C 3 -6 8 -14 12 -20"
+          stroke="#566a4d" stroke-width="0.6" fill="none" opacity="0.7"
+          stroke-linecap="round"/>
+  </g>
+
+  <!-- Leaf 3: small accent, far right-center -->
+  <g transform="translate(148, 68) rotate(-55)">
+    <path d="M0 0 C -3 -6 -1 -15 4 -17 C 9 -18 11 -10 8 -4 C 5 1 1 1 0 0 Z"
+          fill="#5e7355" opacity="0.48"/>
+    <path d="M0 0 C 2 -4 5 -10 8 -15"
+          stroke="#4a5e42" stroke-width="0.5" fill="none" opacity="0.55"
+          stroke-linecap="round"/>
+  </g>
+
+  <!-- Leaf 4: large, lower-center, tilted right -->
+  <g transform="translate(70, 108) rotate(14)">
+    <path d="M0 0 C -6 -12 -3 -32 9 -37 C 21 -40 26 -24 20 -10 C 14 2 3 3 0 0 Z"
+          fill="#6b8060" opacity="0.68"/>
+    <path d="M0 0 C 5 -10 12 -24 20 -34"
+          stroke="#566a4d" stroke-width="0.75" fill="none" opacity="0.75"
+          stroke-linecap="round"/>
+    <!-- secondary vein -->
+    <path d="M10 -18 C 15 -16 18 -11 16 -7"
+          stroke="#566a4d" stroke-width="0.4" fill="none" opacity="0.45"
+          stroke-linecap="round"/>
+    <!-- tertiary vein -->
+    <path d="M4 -8 C 8 -7 10 -4 9 -2"
+          stroke="#566a4d" stroke-width="0.35" fill="none" opacity="0.4"
+          stroke-linecap="round"/>
+  </g>
+
+  <!-- Leaf 5: medium, lower-left, steeply angled -->
+  <g transform="translate(12, 130) rotate(38)">
+    <path d="M0 0 C -4 -9 -1 -22 7 -26 C 15 -28 18 -16 13 -6 C 8 2 2 2 0 0 Z"
+          fill="#5e7355" opacity="0.58"/>
+    <path d="M0 0 C 3 -7 8 -16 13 -23"
+          stroke="#4a5e42" stroke-width="0.6" fill="none" opacity="0.65"
+          stroke-linecap="round"/>
+  </g>
+
+  <!-- Leaf 6: tiny, center-right area — adds visual density -->
+  <g transform="translate(100, 88) rotate(-38)">
+    <path d="M0 0 C -2 -5 0 -11 4 -13 C 8 -14 9 -8 7 -3 C 5 1 1 1 0 0 Z"
+          fill="#6b8060" opacity="0.42"/>
+  </g>
+
+  <!-- Leaf 7: medium-small, top-center, gentle tilt -->
+  <g transform="translate(58, 14) rotate(-8)">
+    <path d="M0 0 C -3 -7 -1 -18 5 -21 C 11 -22 14 -12 10 -4 C 6 2 1 1 0 0 Z"
+          fill="#5e7355" opacity="0.52"/>
+    <path d="M0 0 C 2 -5 6 -12 10 -18"
+          stroke="#4a5e42" stroke-width="0.5" fill="none" opacity="0.58"
+          stroke-linecap="round"/>
+  </g>
+
+  <!-- Leaf 8: slender, bottom-right, steep -->
+  <g transform="translate(138, 142) rotate(62)">
+    <path d="M0 0 C -3 -7 -1 -17 5 -19 C 11 -21 13 -11 10 -4 C 7 2 1 1 0 0 Z"
+          fill="#6b8060" opacity="0.50"/>
+    <path d="M0 0 C 2 -5 6 -12 10 -17"
+          stroke="#566a4d" stroke-width="0.5" fill="none" opacity="0.55"
+          stroke-linecap="round"/>
+  </g>
+</svg>

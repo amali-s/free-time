@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// Reads request URL params + proxies a third-party API — never pre-render.
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const lat = searchParams.get("lat");

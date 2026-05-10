@@ -1,0 +1,1 @@
+ALTER TABLE "spaces" ADD COLUMN "image_enriched_at" timestamp;

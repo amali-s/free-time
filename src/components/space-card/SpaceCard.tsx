@@ -3,22 +3,42 @@
 /**
  * SpaceCard — expandable accordion tile for a single space.
  *
- * Matches the Sage Component Kit space tile design (node 463-186):
- *   - Collapsed: thumbnail + address + title + amenity tags + chevron
- *   - Expanded:  adds description paragraph above chevron
+ * Updated layout (Figma node 49-2027):
+ *   - Image slot sits at the very top, full-width with no horizontal padding
+ *   - Meta row: "Type of space • Address" horizontally aligned, separated
+ *     by a 4×4 px filled dot
+ *   - Title uses the Sage "Heading 2" style (Hiragino Sans, 16px, W5)
+ *   - Below: amenity tags, optional metadata (distance / hours), and an
+ *     expandable description with action links
  *
  * The card is also the list item in list view — tapping expands in place.
  * On map view, the card appears as a bottom sheet / side panel.
  *
- * Figma reference: node 463-186
+ * Figma reference: node 49-2027
  */
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Image from "next/image";
-import type { Space, Amenity } from "@/lib/types/space";
+import type { Space, SpaceType, Amenity } from "@/lib/types/space";
 import { AmenityTag } from "@/components/common/AmenityTag";
 import { Chevron } from "@/components/common/Chevron";
 import { getSpaceImage } from "@/lib/placeholder-image";
+import { getMapsHref } from "@/lib/geo/maps-link";
+
+/**
+ * `useSyncExternalStore` with a no-op subscribe is the React 19-blessed way
+ * to render different content on the server vs the client without a
+ * setState-in-effect warning. The server snapshot returns `false`; the
+ * client snapshot returns `true` after hydration.
+ */
+const subscribeNoop = () => () => {};
+function useIsClient(): boolean {
+  return useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false,
+  );
+}
 
 /* ---- Copy icon (inline — node 463-158) -------------------------------- */
 
@@ -87,6 +107,18 @@ function getTopAmenities(amenities: Amenity[]): Amenity[] {
   return prioritised.slice(0, 4);
 }
 
+/** Human-readable label for a space type, e.g. "coworking" → "Coworking". */
+const TYPE_LABELS: Record<SpaceType, string> = {
+  cafe: "Cafe",
+  coworking: "Coworking",
+  library: "Library",
+  park: "Park",
+  plaza: "Plaza",
+  transit: "Transit",
+  lobby: "Lobby",
+  other: "Other",
+};
+
 /* ---- SpaceCard -------------------------------------------------------- */
 
 interface SpaceCardProps {
@@ -105,6 +137,14 @@ export function SpaceCard({ space, isSelected = false, onSelect, forceExpanded }
   const topAmenities = getTopAmenities(space.amenities);
   const distance = formatDistance(space.distanceKm);
 
+  // SSR can't read navigator, so render the web URL on the server, then swap
+  // to the platform-specific deep link after hydration. This keeps the link
+  // valid on first paint and routes iOS/Android users to their native map app.
+  const isClient = useIsClient();
+  const mapsHref = isClient
+    ? getMapsHref(`${space.name}, ${space.address}`)
+    : `https://maps.google.com/?q=${encodeURIComponent(space.address)}`;
+
   function handleToggle() {
     setLocalExpanded((v) => !v);
     onSelect?.(space.id);
@@ -120,10 +160,13 @@ export function SpaceCard({ space, isSelected = false, onSelect, forceExpanded }
     <article
       aria-expanded={isExpanded}
       style={{
-        backgroundColor: "var(--color-foreground)",
+        backgroundColor: "var(--color-layer-1)",
         border: "0.4px solid var(--color-text-disabled)",
         borderRadius: "var(--radius-lg)",
-        padding: "var(--space-3)",
+        // No top/horizontal padding — the image slot sits flush to the top
+        // edges. We apply horizontal + bottom padding only to the content
+        // section below.
+        padding: 0,
         overflow: "hidden",
         boxShadow: isSelected ? "var(--shadow-md)" : "var(--shadow-sm)",
         outline: isSelected ? `2px solid var(--color-primary-action)` : "none",
@@ -132,44 +175,87 @@ export function SpaceCard({ space, isSelected = false, onSelect, forceExpanded }
         width: "100%",
       }}
     >
-      {/* ---- Top row: thumbnail + content ---- */}
-      <div style={{ display: "flex", gap: "var(--space-4)", alignItems: "flex-start" }}>
+      {/* ---- Image slot — full-width, flush to the top edges ---- */}
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          height: 125,
+          backgroundColor: "var(--color-accent)",
+          overflow: "hidden",
+        }}
+        aria-hidden="true"
+      >
+        <Image
+          src={imageSrc}
+          alt=""
+          fill
+          sizes="(max-width: 768px) 100vw, 400px"
+          style={{ objectFit: "cover" }}
+          unoptimized={imageSrc.startsWith("/illustrations/")}
+        />
+      </div>
 
-        {/* Thumbnail — 55×78px slot as per Figma */}
+      {/* ---- Content column ---- */}
+      <div
+        style={{
+          padding: "var(--space-4)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "var(--space-4)",
+        }}
+      >
+        {/* Title block: meta row + name */}
         <div
           style={{
-            position: "relative",
-            width: 55,
-            height: 78,
-            flexShrink: 0,
-            borderRadius: "var(--radius-md)",
-            overflow: "hidden",
-            backgroundColor: "var(--color-accent)",
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-2)",
           }}
-          aria-hidden="true"
         >
-          <Image
-            src={imageSrc}
-            alt=""
-            fill
-            sizes="55px"
-            style={{ objectFit: "cover" }}
-            unoptimized={imageSrc.startsWith("/illustrations/")}
-          />
-        </div>
-
-        {/* Content column */}
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-
-          {/* Address row */}
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-1)" }}>
+          {/* Meta row: Type of space · Address (with 4×4px dot separator) */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--space-2)",
+              minWidth: 0,
+            }}
+          >
             <span
               style={{
                 fontSize: 12,
                 fontWeight: 300,
                 lineHeight: 1.4,
                 letterSpacing: "-0.72px",
-                color: "var(--color-text-tertiary)",
+                color: "var(--color-neutral-text)",
+                fontFamily: "var(--font-sans)",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+              }}
+            >
+              {TYPE_LABELS[space.type]}
+            </span>
+
+            {/* 4×4 px filled dot separator */}
+            <span
+              aria-hidden="true"
+              style={{
+                width: 4,
+                height: 4,
+                flexShrink: 0,
+                borderRadius: "50%",
+                backgroundColor: "var(--color-neutral-text)",
+              }}
+            />
+
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 300,
+                lineHeight: 1.4,
+                letterSpacing: "-0.72px",
+                color: "var(--color-neutral-text)",
                 fontFamily: "var(--font-sans)",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -180,6 +266,7 @@ export function SpaceCard({ space, isSelected = false, onSelect, forceExpanded }
             >
               {space.address}
             </span>
+
             <button
               type="button"
               onClick={handleCopyAddress}
@@ -203,14 +290,14 @@ export function SpaceCard({ space, isSelected = false, onSelect, forceExpanded }
             </button>
           </div>
 
-          {/* Space name */}
+          {/* Space name — Heading 2 (Hiragino Sans, 16px, W5/500, ~1 line-height) */}
           <h2
             style={{
-              fontFamily: "var(--font-rasa), Georgia, serif",
-              fontWeight: 300,
-              fontSize: 24,
+              fontFamily: "var(--font-sans)",
+              fontWeight: 500,
+              fontSize: 16,
               lineHeight: 1,
-              letterSpacing: "-0.48px",
+              letterSpacing: 0,
               color: "var(--color-text-primary)",
               margin: 0,
               overflow: "hidden",
@@ -220,89 +307,103 @@ export function SpaceCard({ space, isSelected = false, onSelect, forceExpanded }
           >
             {space.name}
           </h2>
-
-          {/* Metadata row: distance · hours · noise */}
-          {(distance || space.hours) && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "var(--space-2)",
-                fontSize: 11,
-                color: "var(--color-text-tertiary)",
-                fontFamily: "var(--font-sans)",
-              }}
-            >
-              {distance && <span>{distance} away</span>}
-              {space.hours && (
-                <>
-                  {distance && <span aria-hidden="true">·</span>}
-                  <span
-                    style={{
-                      color: isOpenNow(space.hours)
-                        ? "var(--color-success)"
-                        : "var(--color-error)",
-                    }}
-                  >
-                    {isOpenNow(space.hours) ? "Open" : "Closed"}
-                  </span>
-                  <span aria-hidden="true">·</span>
-                  <span>
-                    {formatHour(space.hours.open)}–{formatHour(space.hours.close)}
-                  </span>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Amenity tags row */}
-          {topAmenities.length > 0 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-1)" }}>
-              {topAmenities.map((amenity) => (
-                <AmenityTag key={amenity} amenity={amenity} />
-              ))}
-            </div>
-          )}
         </div>
-      </div>
 
-      {/* ---- Expanded: description ---- */}
-      {isExpanded && space.description && (
-        <p
-          style={{
-            marginTop: "var(--space-4)",
-            marginBottom: 0,
-            fontSize: 14,
-            fontWeight: 300,
-            lineHeight: 1.5,
-            color: "var(--color-text-secondary)",
-            fontFamily: "var(--font-sans)",
-          }}
-        >
-          {space.description}
-        </p>
-      )}
+        {/* Metadata row: distance · open/closed · hours */}
+        {(distance || space.hours) && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--space-2)",
+              fontSize: 11,
+              color: "var(--color-text-tertiary)",
+              fontFamily: "var(--font-sans)",
+            }}
+          >
+            {distance && <span>{distance} away</span>}
+            {space.hours && (
+              <>
+                {distance && <span aria-hidden="true">·</span>}
+                <span
+                  style={{
+                    color: isOpenNow(space.hours)
+                      ? "var(--color-success)"
+                      : "var(--color-error)",
+                  }}
+                >
+                  {isOpenNow(space.hours) ? "Open" : "Closed"}
+                </span>
+                <span aria-hidden="true">·</span>
+                <span>
+                  {formatHour(space.hours.open)}–{formatHour(space.hours.close)}
+                </span>
+              </>
+            )}
+          </div>
+        )}
 
-      {/* ---- Expanded: action links ---- */}
-      {isExpanded && (
-        <div
-          style={{
-            marginTop: "var(--space-4)",
-            display: "flex",
-            gap: "var(--space-2)",
-          }}
-        >
-          {space.websiteUrl && (
+        {/* Amenity tags row */}
+        {topAmenities.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-1)" }}>
+            {topAmenities.map((amenity) => (
+              <AmenityTag key={amenity} amenity={amenity} />
+            ))}
+          </div>
+        )}
+
+        {/* ---- Expanded: description ---- */}
+        {isExpanded && space.description && (
+          <p
+            style={{
+              margin: 0,
+              fontSize: 14,
+              fontWeight: 300,
+              lineHeight: 1.5,
+              color: "var(--color-text-secondary)",
+              fontFamily: "var(--font-sans)",
+            }}
+          >
+            {space.description}
+          </p>
+        )}
+
+        {/* ---- Expanded: action links ---- */}
+        {isExpanded && (
+          <div style={{ display: "flex", gap: "var(--space-2)" }}>
+            {space.websiteUrl && (
+              <a
+                href={space.websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  padding: "6px var(--space-3)",
+                  backgroundColor: "var(--color-primary-action)",
+                  color: "var(--color-foreground)",
+                  borderRadius: "var(--radius-md)",
+                  fontSize: 13,
+                  fontWeight: 400,
+                  fontFamily: "var(--font-sans)",
+                  textDecoration: "none",
+                  minHeight: 44,
+                  minWidth: 44,
+                }}
+              >
+                Website ↗
+              </a>
+            )}
             <a
-              href={space.websiteUrl}
+              href={mapsHref}
               target="_blank"
               rel="noopener noreferrer"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 padding: "6px var(--space-3)",
-                backgroundColor: "var(--color-primary-action)",
-                color: "var(--color-foreground)",
+                backgroundColor: "var(--color-background)",
+                color: "var(--color-text-secondary)",
                 borderRadius: "var(--radius-md)",
                 fontSize: 13,
                 fontWeight: 400,
@@ -310,57 +411,35 @@ export function SpaceCard({ space, isSelected = false, onSelect, forceExpanded }
                 textDecoration: "none",
                 minHeight: 44,
                 minWidth: 44,
+                border: "0.4px solid var(--color-text-disabled)",
               }}
             >
-              Website ↗
+              Directions
             </a>
-          )}
-          <a
-            href={`https://maps.google.com/?q=${encodeURIComponent(space.address)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              padding: "6px var(--space-3)",
-              backgroundColor: "var(--color-background)",
-              color: "var(--color-text-secondary)",
-              borderRadius: "var(--radius-md)",
-              fontSize: 13,
-              fontWeight: 400,
-              fontFamily: "var(--font-sans)",
-              textDecoration: "none",
-              minHeight: 44,
-              minWidth: 44,
-              border: "0.4px solid var(--color-text-disabled)",
-            }}
-          >
-            Directions
-          </a>
-        </div>
-      )}
+          </div>
+        )}
 
-      {/* ---- Chevron toggle ---- */}
-      <button
-        type="button"
-        onClick={handleToggle}
-        aria-label={isExpanded ? `Collapse ${space.name}` : `Expand ${space.name}`}
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          marginTop: "var(--space-3)",
-          padding: "var(--space-1) 0",
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          color: "var(--color-text-tertiary)",
-          minHeight: 28,
-        }}
-      >
-        <Chevron direction={isExpanded ? "up" : "down"} />
-      </button>
+        {/* ---- Chevron toggle ---- */}
+        <button
+          type="button"
+          onClick={handleToggle}
+          aria-label={isExpanded ? `Collapse ${space.name}` : `Expand ${space.name}`}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            padding: "var(--space-1) 0",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "var(--color-text-tertiary)",
+            minHeight: 28,
+          }}
+        >
+          <Chevron direction={isExpanded ? "up" : "down"} />
+        </button>
+      </div>
     </article>
   );
 }

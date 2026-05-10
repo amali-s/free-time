@@ -1,6 +1,6 @@
 # FreeTime
 
-A map-based web application that helps people find public and work-centric spaces to spend extended periods of time. Whether you're a traveler with hours to kill before check-in, a remote worker whose office is temporarily closed, or someone exploring a new city, FreeTime surfaces nearby spaces with the amenities you need.
+A mobile-first web app that helps people find public and work-friendly spaces to spend extended periods of time. Whether you're a traveler with hours to kill before check-in, a remote worker whose office is temporarily closed, or someone exploring a new city, FreeTime surfaces nearby spaces with the amenities you need — one card at a time.
 
 ## Problem
 
@@ -19,11 +19,11 @@ Alex just arrived in Bologna, Italy and doesn't check into his hotel for 4 hours
 
 ## Features
 
-1. **City detection and search** -- Opens to the user's current city via geolocation; supports searching and switching to any city
-2. **Map and list views** -- Browse spaces on an interactive map or in a proximity-sorted list; see the total count of spaces in the selected city
-3. **Amenity filters** -- Filter by wifi, bathroom, outlets, seating, and more
-4. **Space detail cards** -- Tap a map pin or list item to see a detail card with tags (free, paid, cafe, wifi, bathroom, storage, etc.)
-5. **Space count** -- Always visible total of how many spaces are available in the current city
+1. **City detection and search** -- Opens to the user's current city via geolocation; supports searching and switching to any city.
+2. **Swipe deck** -- Browse nearby spaces one card at a time, sorted by proximity. Swipe right to save, left to pass, tap to open the space in your default map app (Apple Maps on iOS, the system map chooser on Android, Google Maps web elsewhere).
+3. **Amenity filters** -- Filter by wifi, bathroom, outlets, seating, storage, and more. The total count of matching spaces is always visible in the header.
+4. **Saved spaces** -- Right-swiped spaces persist locally across reloads.
+5. **Real photos for matched spaces** -- Pulled from Google Places and cached in Supabase Storage; spaces without a match fall back to themed illustrations.
 
 ## Space Types
 
@@ -33,6 +33,10 @@ Alex just arrived in Bologna, Italy and doesn't check into his hotel for 4 hours
 - Lobbies and transit hubs
 - Any space where a person can comfortably spend 1-5+ hours
 
+## Tech Stack
+
+Next.js 16 (App Router) · TypeScript · Tailwind v4 with Sage design tokens · framer-motion (swipe physics) · Zustand (with localStorage persist for saves) · Supabase Postgres + PostGIS · Drizzle ORM · Supabase Storage · Google Places Photos API.
+
 ## Status
 
-Early stage -- foundational documents and design system established. See `CLAUDE.md` for technical direction and `design.md` for UX and visual design guidelines.
+Active polish & QA — core flows shipped (geolocation → city → swipe deck with proximity-sorted spaces, amenity filters, persisted saves, native-app map deep links). Remaining work: accessibility audit, Lighthouse baseline, cross-browser QA. See `PROJECT_STATUS.md` for the full roadmap, `CLAUDE.md` for technical direction, and `design.md` for UX and visual design guidelines.
