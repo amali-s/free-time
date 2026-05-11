@@ -1,0 +1,8 @@
+{
+  "framework": "nextjs",
+  "nodeVersion": "20.x",
+  "buildCommand": "next build",
+  "env": {
+    "NEXT_TELEMETRY_DISABLED": "1"
+  }
+}
