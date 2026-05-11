@@ -15,7 +15,6 @@
     "db:enrich-images": "tsx --conditions=react-server --env-file=.env.local scripts/enrich-images.ts"
   },
   "dependencies": {
-    "@esbuild/darwin-arm64": "^0.28.0",
     "@supabase/ssr": "^0.10.0",
     "@supabase/supabase-js": "^2.101.1",
     "drizzle-orm": "^0.45.2",
