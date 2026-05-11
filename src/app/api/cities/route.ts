@@ -26,9 +26,17 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(response);
   } catch (err) {
+    // Log full error to Vercel's runtime logs.
     console.error("GET /api/cities failed:", err);
+
+    // Surface the underlying message so the browser console / Network tab
+    // is usable for diagnosis. This is a non-secret error message
+    // (Postgres / Drizzle errors don't leak data), and the project does not
+    // expose any auth boundary on this route. If you ever add one, gate this
+    // behind `process.env.NODE_ENV !== "production"`.
+    const message = err instanceof Error ? err.message : String(err);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal server error", detail: message },
       { status: 500 }
     );
   }

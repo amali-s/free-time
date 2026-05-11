@@ -28,9 +28,20 @@ function getDb(): DrizzleClient {
   }
 
   // max: 1 for serverless environments (Next.js Route Handlers).
+  //
+  // prepare: false is required when DATABASE_URL points at Supabase's
+  // transaction-mode pooler (port 6543, host `*.pooler.supabase.com`).
+  // The pooler multiplexes connections per transaction, which breaks named
+  // prepared statements. Setting this unconditionally is safe — direct
+  // (non-pooled) Postgres works fine without prepared statements too.
+  //
+  // Why this matters on Vercel: Supabase's free-tier direct host
+  // (`db.<project>.supabase.co:5432`) only resolves to IPv6, and Vercel's
+  // Node runtime has no IPv6 outbound. Everyone ends up using the pooler.
   const client = postgres(connectionString, {
     max: 1,
     idle_timeout: 20,
+    prepare: false,
   });
 
   cached = drizzle(client, { schema });

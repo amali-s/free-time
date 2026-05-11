@@ -64,31 +64,46 @@ export function useGeolocation() {
         setState((s) => ({ ...s, lat, lng }));
 
         // Reverse geocode to find the city
+        let result;
         try {
-          const result = await reverseGeocode(lat, lng);
-          if (!result) {
-            setState((s) => ({
-              ...s,
-              loading: false,
-              error: "Could not determine city from your location.",
-            }));
-            return;
-          }
+          result = await reverseGeocode(lat, lng);
+        } catch (err) {
+          console.error("[useGeolocation] reverse-geocode failed:", err);
+          setState((s) => ({
+            ...s,
+            loading: false,
+            error: "Failed to reverse geocode your location.",
+          }));
+          return;
+        }
 
-          const slug = toCitySlug(result.cityName, result.region);
+        if (!result) {
+          setState((s) => ({
+            ...s,
+            loading: false,
+            error: "Could not determine city from your location.",
+          }));
+          return;
+        }
 
-          // Check if this city exists in our database
+        const slug = toCitySlug(result.cityName, result.region);
+
+        // Check if this city exists in our database. Failures here are
+        // backend/DB issues, NOT geolocation issues — surface them clearly
+        // so the user doesn't think permissions are the problem.
+        try {
           const res = await fetch(`/api/cities?q=${encodeURIComponent(result.cityName)}`);
-          if (!res.ok) throw new Error(`Cities API error: ${res.status}`);
+          if (!res.ok) {
+            const body = await res.json().catch(() => null);
+            const detail = body?.detail ? `: ${body.detail}` : "";
+            throw new Error(`Cities API error ${res.status}${detail}`);
+          }
           const data = await res.json();
-          const match = data.cities?.find(
-            (c: City) => c.slug === slug
-          );
+          const match = data.cities?.find((c: City) => c.slug === slug);
 
           if (match) {
             setState((s) => ({ ...s, city: match, loading: false }));
           } else {
-            // City not in our database — still set coordinates, but no city match
             setState((s) => ({
               ...s,
               loading: false,
@@ -96,11 +111,11 @@ export function useGeolocation() {
             }));
           }
         } catch (err) {
-          console.error("[useGeolocation] reverse-geocode failed:", err);
+          console.error("[useGeolocation] city lookup failed:", err);
           setState((s) => ({
             ...s,
             loading: false,
-            error: "Failed to reverse geocode your location.",
+            error: "Got your location, but couldn't reach the spaces database. Try again or search for a city.",
           }));
         }
       },

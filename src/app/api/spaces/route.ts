@@ -102,8 +102,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(response);
   } catch (err) {
     console.error("GET /api/spaces failed:", err);
+    const message = err instanceof Error ? err.message : String(err);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal server error", detail: message },
       { status: 500 }
     );
   }
