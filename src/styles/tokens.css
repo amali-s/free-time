@@ -89,7 +89,7 @@
   --ease-exit: cubic-bezier(0.0, 0.0, 0.58, 1.0);
 
   /* ---- Canvas view surfaces ---- */
-  --color-canvas-bg: #EBEDDE;       /* Pile view page background */
+  --color-canvas-bg: #C5A3D6;       /* Pile view page background */
   --color-layer-1: #fff8f0;         /* Profile card background (Figma: --layer-1) */
 
   /* ---- Texture ---- */

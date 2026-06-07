@@ -104,7 +104,7 @@ export function SpaceProfileCard({ space, isSaved, onCopyAddress }: SpaceProfile
     <article
       aria-label={`${space.name}, ${typeLabel}`}
       style={{
-        backgroundColor: "var(--color-layer-1)",
+        background: "radial-gradient(ellipse at center, #fff8f0 0%, #F9F2D8 100%)",
         borderRadius: "var(--radius-lg)",
         overflow: "hidden",
         boxShadow: "0px 4px 12px rgba(108, 114, 117, 0.22), 0px 1px 3px rgba(108, 114, 117, 0.12)",
@@ -167,68 +167,71 @@ export function SpaceProfileCard({ space, isSaved, onCopyAddress }: SpaceProfile
           padding: "var(--space-4)",
           display: "flex",
           flexDirection: "column",
-          gap: "var(--space-3)",
+          gap: 16,
         }}
       >
-        {/* Address + copy */}
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-1)" }}>
-          <span
+        {/* Address + space name grouped — 8px gap between them */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {/* Address + copy */}
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-1)" }}>
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 300,
+                lineHeight: 1.4,
+                letterSpacing: "-0.72px",
+                color: "var(--color-text-tertiary)",
+                fontFamily: "var(--font-sans)",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                flex: 1,
+                minWidth: 0,
+              }}
+            >
+              {space.address}
+            </span>
+            <button
+              type="button"
+              onClick={handleCopy}
+              aria-label={`Copy address: ${space.address}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                padding: 3,
+                color: "var(--color-text-tertiary)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                minWidth: 22,
+                minHeight: 22,
+                borderRadius: "var(--radius-sm)",
+              }}
+            >
+              <CopyIcon />
+            </button>
+          </div>
+
+          {/* Space name */}
+          <h2
             style={{
-              fontSize: 12,
+              fontFamily: "var(--font-petrona), Georgia, serif",
               fontWeight: 300,
-              lineHeight: 1.4,
-              letterSpacing: "-0.72px",
-              color: "var(--color-text-tertiary)",
-              fontFamily: "var(--font-sans)",
+              fontSize: 22,
+              lineHeight: 1,
+              letterSpacing: "-0.44px",
+              color: "var(--color-text-primary)",
+              margin: 0,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
-              flex: 1,
-              minWidth: 0,
             }}
           >
-            {space.address}
-          </span>
-          <button
-            type="button"
-            onClick={handleCopy}
-            aria-label={`Copy address: ${space.address}`}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              padding: 3,
-              color: "var(--color-text-tertiary)",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              minWidth: 22,
-              minHeight: 22,
-              borderRadius: "var(--radius-sm)",
-            }}
-          >
-            <CopyIcon />
-          </button>
+            {space.name}
+          </h2>
         </div>
-
-        {/* Space name */}
-        <h2
-          style={{
-            fontFamily: "var(--font-rasa), Georgia, serif",
-            fontWeight: 300,
-            fontSize: 22,
-            lineHeight: 1,
-            letterSpacing: "-0.44px",
-            color: "var(--color-text-primary)",
-            margin: 0,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {space.name}
-        </h2>
 
         {/* Amenity tags — pale mustard background per Figma */}
         {topAmenities.length > 0 && (

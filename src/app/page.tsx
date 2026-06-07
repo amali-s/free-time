@@ -165,21 +165,73 @@ export default function Home() {
         position: "relative",
       }}
     >
-      {/* ── Leaf texture layer (behind everything) ── */}
+      {/* ── Cirrus cloud layer (fixed, behind everything) ── */}
       <div
         aria-hidden="true"
         style={{
           position: "fixed",
           inset: 0,
           zIndex: 0,
-          backgroundImage: "url('/leaf-texture.svg')",
-          backgroundRepeat: "repeat",
-          backgroundSize: "160px 160px",
-          filter: "blur(2.5px)",
-          opacity: 0.18,
+          overflow: "hidden",
           pointerEvents: "none",
         }}
-      />
+      >
+        {/* Cloud 1 — upper left */}
+        <div style={{
+          position: "absolute",
+          top: "8%",
+          left: "-5%",
+          animation: "cloud-drift-1 28s ease-in-out infinite, cloud-pulse 10s ease-in-out infinite",
+        }}>
+          <div style={{ position: "relative", width: 520, height: 96 }}>
+            <div style={{ position: "absolute", width: 520, height: 96, background: "linear-gradient(to right, transparent 0%, #FFFFFF 30%, #E8CEEE 65%, transparent 100%)", borderRadius: 9999, filter: "blur(28px)", opacity: 0.65 }} />
+            <div style={{ position: "absolute", top: -28, left: 80, width: 360, height: 72, background: "linear-gradient(to right, transparent 0%, #FBF3FF 35%, #E3C7EB 60%, transparent 100%)", borderRadius: 9999, filter: "blur(18px)", opacity: 0.5, transform: "rotate(5deg)" }} />
+            <div style={{ position: "absolute", top: 20, left: 160, width: 260, height: 52, background: "linear-gradient(to right, transparent 0%, #F8F0FF 40%, #D3BEE4 55%, transparent 100%)", borderRadius: 9999, filter: "blur(10px)", opacity: 0.5, transform: "rotate(-10deg)" }} />
+          </div>
+        </div>
+
+        {/* Cloud 2 — upper right */}
+        <div style={{
+          position: "absolute",
+          top: "18%",
+          right: "-8%",
+          animation: "cloud-drift-2 34s ease-in-out infinite, cloud-pulse 13s ease-in-out infinite 2s",
+        }}>
+          <div style={{ position: "relative", width: 480, height: 88 }}>
+            <div style={{ position: "absolute", width: 480, height: 88, background: "linear-gradient(to right, transparent 0%, #FFFFFF 25%, #E8CEEE 70%, transparent 100%)", borderRadius: 9999, filter: "blur(28px)", opacity: 0.65 }} />
+            <div style={{ position: "absolute", top: -24, left: 60, width: 320, height: 64, background: "linear-gradient(to right, transparent 0%, #FBF3FF 30%, #E3C7EB 65%, transparent 100%)", borderRadius: 9999, filter: "blur(18px)", opacity: 0.5, transform: "rotate(-6deg)" }} />
+            <div style={{ position: "absolute", top: 18, left: 140, width: 240, height: 48, background: "linear-gradient(to right, transparent 0%, #F8F0FF 38%, #D3BEE4 58%, transparent 100%)", borderRadius: 9999, filter: "blur(10px)", opacity: 0.5, transform: "rotate(8deg)" }} />
+          </div>
+        </div>
+
+        {/* Cloud 3 — mid left */}
+        <div style={{
+          position: "absolute",
+          top: "44%",
+          left: "-10%",
+          animation: "cloud-drift-3 40s ease-in-out infinite, cloud-pulse 16s ease-in-out infinite 5s",
+        }}>
+          <div style={{ position: "relative", width: 560, height: 100 }}>
+            <div style={{ position: "absolute", width: 560, height: 100, background: "linear-gradient(to right, transparent 0%, #FFFFFF 28%, #E8CEEE 68%, transparent 100%)", borderRadius: 9999, filter: "blur(28px)", opacity: 0.65 }} />
+            <div style={{ position: "absolute", top: -30, left: 100, width: 380, height: 70, background: "linear-gradient(to right, transparent 0%, #FBF3FF 32%, #E3C7EB 62%, transparent 100%)", borderRadius: 9999, filter: "blur(18px)", opacity: 0.5, transform: "rotate(4deg)" }} />
+            <div style={{ position: "absolute", top: 22, left: 200, width: 280, height: 56, background: "linear-gradient(to right, transparent 0%, #F8F0FF 36%, #D3BEE4 56%, transparent 100%)", borderRadius: 9999, filter: "blur(10px)", opacity: 0.5, transform: "rotate(-14deg)" }} />
+          </div>
+        </div>
+
+        {/* Cloud 4 — lower right */}
+        <div style={{
+          position: "absolute",
+          top: "68%",
+          right: "-6%",
+          animation: "cloud-drift-4 36s ease-in-out infinite, cloud-pulse 12s ease-in-out infinite 7s",
+        }}>
+          <div style={{ position: "relative", width: 500, height: 92 }}>
+            <div style={{ position: "absolute", width: 500, height: 92, background: "linear-gradient(to right, transparent 0%, #FFFFFF 30%, #E8CEEE 65%, transparent 100%)", borderRadius: 9999, filter: "blur(28px)", opacity: 0.65 }} />
+            <div style={{ position: "absolute", top: -26, left: 70, width: 340, height: 66, background: "linear-gradient(to right, transparent 0%, #FBF3FF 33%, #E3C7EB 63%, transparent 100%)", borderRadius: 9999, filter: "blur(18px)", opacity: 0.5, transform: "rotate(-5deg)" }} />
+            <div style={{ position: "absolute", top: 20, left: 170, width: 260, height: 50, background: "linear-gradient(to right, transparent 0%, #F8F0FF 40%, #D3BEE4 55%, transparent 100%)", borderRadius: 9999, filter: "blur(10px)", opacity: 0.5, transform: "rotate(11deg)" }} />
+          </div>
+        </div>
+      </div>
 
       {/* ── Content sits above the texture ── */}
       <div
@@ -198,8 +250,11 @@ export default function Home() {
           position: "sticky",
           top: 0,
           zIndex: 10,
-          backgroundColor: "var(--color-canvas-bg)",
-          borderBottom: "0.4px solid color-mix(in srgb, var(--color-text-disabled) 60%, transparent)",
+          backgroundColor: "rgba(197, 163, 214, 0.45)",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E\")",
+          borderBottom: "0.4px solid rgba(197, 163, 214, 0.4)",
           boxShadow: "0 2px 12px rgba(89, 86, 64, 0.08)",
         }}
       >

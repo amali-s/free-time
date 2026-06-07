@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Sans, Rasa } from "next/font/google";
+import { Noto_Sans, Rasa, Petrona } from "next/font/google";
 import "./globals.css";
 
 /**
@@ -20,6 +20,17 @@ const notoSans = Noto_Sans({
  */
 const rasa = Rasa({
   variable: "--font-rasa",
+  subsets: ["latin"],
+  weight: ["300"],
+  display: "swap",
+});
+
+/**
+ * Petrona Light — Sage design system heading font for SpaceProfileCard titles.
+ * Loaded at weight 300 to match the editorial lightness of the design system.
+ */
+const petrona = Petrona({
+  variable: "--font-petrona",
   subsets: ["latin"],
   weight: ["300"],
   display: "swap",
@@ -49,7 +60,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${notoSans.variable} ${rasa.variable} h-full antialiased`}>
+    <html lang="en" className={`${notoSans.variable} ${rasa.variable} ${petrona.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

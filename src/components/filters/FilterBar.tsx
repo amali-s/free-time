@@ -29,7 +29,7 @@ interface FilterBarProps {
 
 function CloseIcon() {
   return (
-    <svg width="7" height="8" viewBox="0 0 7 8" fill="none" aria-hidden="true">
+    <svg width="12" height="12" viewBox="0 0 7 8" fill="none" aria-hidden="true">
       <path d="M1 1L6 7M6 1L1 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -73,18 +73,18 @@ export function FilterBar({ resultCount }: FilterBarProps) {
               display: "inline-flex",
               alignItems: "center",
               gap: "4px",
-              paddingInline: "8px",
-              paddingBlock: "4px",
+              paddingInline: "12px",
+              paddingBlock: "0",
               borderRadius: "12px",
               border: "none",
-              backgroundColor: isActive ? "var(--color-accent)" : "var(--color-foreground)",
-              color: "var(--color-text-tertiary)",
-              fontSize: "8px",
+              backgroundColor: isActive ? "#8F5DA8" : "var(--color-foreground)",
+              color: isActive ? "#ffffff" : "var(--color-text-tertiary)",
+              fontSize: "12px",
               fontWeight: 400,
               fontFamily: "var(--font-sans)",
               cursor: "pointer",
               flexShrink: 0,
-              minHeight: 20,
+              minHeight: 44,
               transition: "background-color 200ms var(--ease-enter), color 200ms var(--ease-enter)",
               whiteSpace: "nowrap",
               letterSpacing: "-0.32px",
