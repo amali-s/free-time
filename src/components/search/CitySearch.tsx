@@ -53,7 +53,7 @@ export function CitySearch({ onSelect, placeholder = "Search for a city…" }: C
       const data = await res.json();
       const cities: City[] = data.cities ?? [];
       setResults(cities);
-      setIsOpen(cities.length > 0);
+      setIsOpen(true);
       setActiveIndex(-1);
     } catch {
       setResults([]);
@@ -215,49 +215,69 @@ export function CitySearch({ onSelect, placeholder = "Search for a city…" }: C
             animation: "fade-in 150ms var(--ease-enter) both",
           }}
         >
-          {results.map((city, i) => (
+          {results.length === 0 ? (
             <li
-              key={city.slug}
-              id={`${listboxId}-option-${i}`}
-              role="option"
-              aria-selected={activeIndex === i}
-              onMouseDown={(e) => { e.preventDefault(); handleSelect(city); }}
-              onTouchStart={(e) => { e.preventDefault(); handleSelect(city); }}
-              onMouseEnter={() => setActiveIndex(i)}
-              onMouseLeave={() => setActiveIndex(-1)}
+              role="presentation"
+              aria-live="polite"
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between",
                 padding: "10px var(--space-4)",
-                cursor: "pointer",
-                backgroundColor:
-                  activeIndex === i ? "var(--color-background)" : "transparent",
-                transition: "background-color 100ms",
                 minHeight: 44,
+                fontSize: 14,
+                fontWeight: 300,
+                fontFamily: "var(--font-sans)",
+                color: "var(--color-text-tertiary)",
+                cursor: "default",
               }}
             >
-              <span
-                style={{
-                  fontSize: 14,
-                  fontWeight: 300,
-                  fontFamily: "var(--font-sans)",
-                  color: "var(--color-text-primary)",
-                }}
-              >
-                {city.name}
-              </span>
-              <span
-                style={{
-                  fontSize: 12,
-                  color: "var(--color-text-tertiary)",
-                  fontFamily: "var(--font-sans)",
-                }}
-              >
-                {city.region ? `${city.region}, ` : ""}{city.country}
-              </span>
+              No cities found
             </li>
-          ))}
+          ) : (
+            results.map((city, i) => (
+              <li
+                key={city.slug}
+                id={`${listboxId}-option-${i}`}
+                role="option"
+                aria-selected={activeIndex === i}
+                onMouseDown={(e) => { e.preventDefault(); handleSelect(city); }}
+                onTouchStart={(e) => { e.preventDefault(); handleSelect(city); }}
+                onMouseEnter={() => setActiveIndex(i)}
+                onMouseLeave={() => setActiveIndex(-1)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "10px var(--space-4)",
+                  cursor: "pointer",
+                  backgroundColor:
+                    activeIndex === i ? "var(--color-background)" : "transparent",
+                  transition: "background-color 100ms",
+                  minHeight: 44,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 300,
+                    fontFamily: "var(--font-sans)",
+                    color: "var(--color-text-primary)",
+                  }}
+                >
+                  {city.name}
+                </span>
+                <span
+                  style={{
+                    fontSize: 12,
+                    color: "var(--color-text-tertiary)",
+                    fontFamily: "var(--font-sans)",
+                  }}
+                >
+                  {city.region ? `${city.region}, ` : ""}{city.country}
+                </span>
+              </li>
+            ))
+          )}
         </ul>
       )}
     </div>

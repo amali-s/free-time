@@ -276,13 +276,13 @@ export function SpaceCard({ space, isSelected = false, onSelect, forceExpanded }
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
-                padding: 2,
+                padding: 6,
                 color: "var(--color-text-tertiary)",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                minWidth: 20,
-                minHeight: 20,
+                minWidth: 44,
+                minHeight: 44,
                 borderRadius: "var(--radius-sm)",
               }}
             >
@@ -434,7 +434,7 @@ export function SpaceCard({ space, isSelected = false, onSelect, forceExpanded }
             border: "none",
             cursor: "pointer",
             color: "var(--color-text-tertiary)",
-            minHeight: 28,
+            minHeight: 44,
           }}
         >
           <Chevron direction={isExpanded ? "up" : "down"} />
